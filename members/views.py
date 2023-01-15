@@ -32,18 +32,18 @@ def register(request):
 @login_required
 def dashboard(request):
     username = request.user.username
-    # username_obj = AccountDB.objects.get(username=username)
-    try:
-        username_obj = AccountDB.objects.get(username=username)
-    except:
-        print("Variable username is not defined")
-        username_obj = AccountDB.objects.create(username=username)
-        print("Created new username")
-    else:
-        username_obj = AccountDB.objects.get(username=username)
-        print("username found")
+    username_obj = AccountDB.objects.get(username=username)
+    # try:
+    #     username_obj = AccountDB.objects.get(username=username)
+    # except:
+    #     print("Variable username is not defined")
+    #     username_obj = AccountDB.objects.create(username=username)
+    #     print("Created new username")
+    # else:
+    #     username_obj = AccountDB.objects.get(username=username)
+    #     print("username found")
     templatedb = Template.objects.filter(owner=username_obj)
-    templatedb = Template.objects.raw('SELECT female_name, male_name FROM members_template WHERE owner = %s',[username_obj])
+    # templatedb = Template.objects.raw('SELECT female_name, male_name FROM members_template WHERE owner = %s',[username_obj])
     context = {
         'templatedb': templatedb,
     }
@@ -53,7 +53,18 @@ def dashboard(request):
 @login_required
 def test(request, id):
     username = request.user.username
-    username_obj = AccountDB.objects.create(username=username)
+    username_obj = AccountDB.objects.get(username=username)
+    # try:
+    #     username_obj = AccountDB.objects.get(username=username)
+    # except:
+    #     print("Variable username is not defined")
+    #     username_obj = AccountDB.objects.create(username=username)
+    #     print("Created new username")
+    # else:
+    #     username_obj = AccountDB.objects.get(username=username)
+    #     print("username found")
+    #     print(username)
+    # username_obj = AccountDB.objects.create(username=username)
     date_html = request.POST['date']
     time_html = request.POST['time']
     html_datetime = f'{date_html} {time_html}'
@@ -70,7 +81,7 @@ def test(request, id):
         'date':str(date_html),
         'time':str(time_html),
     }
-    templatedb = Template.objects.create(owner=username_obj, male_name=male_name, female_name=female_name, date=date_datetime)
+    templatedb = Template.objects.create(owner=username_obj, male_name=male_name, female_name=female_name, date=date_datetime, id_global=id_n)
     # public_templatedb = publicTemplate(id_n)
 
     content = render_to_string('template1.html', context) 
