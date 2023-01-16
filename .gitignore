@@ -1,3 +1,4 @@
 /.vscode
 /db.sqlite3
 /venv
+/invitation_app/settings.py

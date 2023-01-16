@@ -28,10 +28,8 @@ def register(request):
         template = loader.get_template('register.html')
         return HttpResponse(template.render(request))   
     else:
-        return render(request, 'index.html')
         messages.error(request, 'you are logged in already')
-
-
+        return render(request, 'index.html')
 
 def register_request(request):
     if request.method == 'POST':
@@ -75,19 +73,35 @@ def edit(request, id):
     }
     return HttpResponse(template.render(context, request))
 
-def request_edit(request, id):
+def edit_request(request, id):
+    id_str = str(id)
     male_name = request.POST['male_name']
     female_name = request.POST['female_name']
     date_html = request.POST['date']
     time_html = request.POST['time']
     html_datetime = f'{date_html} {time_html}'
     date_datetime = datetime.strptime(html_datetime, '%Y-%m-%d %H:%M')
+
+    #templatedb
     templatedb = Template.objects.get(id_global=id)
     templatedb.male_name = male_name
     templatedb.female_name = female_name
     templatedb.date = date_datetime
     templatedb.save()
-    return HttpResponseRedirect(reverse('edit'))
+
+    context = {
+        'male_name':male_name,
+        'female_name':female_name,
+        'date':str(date_html),
+        'time':str(time_html)
+    }
+    content = render_to_string('template1.html', context)
+    template = loader.get_template('template1.html')
+    # return HttpResponseRedirect(reverse('edit'))
+    with open('C:\\Users\\Alaikal Hamdi\\Documents\\Alaikal Hamdi\\Yuan X Taiga\\invitation_app\\templates\\invite_templates\\ts_test' + id_str + '.html', 'w') as static_file:
+        static_file.write(content)
+
+    return HttpResponse(template.render(context, request))
 
 @login_required
 def test(request, id):
