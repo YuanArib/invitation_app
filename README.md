@@ -13,12 +13,6 @@ On going project created by Yuan Mizuna!#5858
 - Run the development server with `python manage.py runserver`
 - Go to 127.0.0.1:8000
 
-<h2>urls map</h2>
-- / = index
-- /members = app_index
-- /members/dashboard = dashboard
-- /members/register = register
-
-📓Notes:
+<h2>📓Notes:</h2>
 Activate venv if you are going to do anything with django / python related in terminal (including running the server)
 Open for Issues, will get this repo on private later.
