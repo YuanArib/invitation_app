@@ -3,7 +3,7 @@ On going project created by Yuan Mizuna!#5858
 
 <h2>How do I run this?</h2>
 
-- First create python venv in the root directory (invitation_app), then activate it
+- First create python venv in the root directory (invitation_app), then activate it<br>
     How to do it:
     - Create python env with `python -m venv {venv_name}
     - On Unix based OS (Linux and MacOS), activate it using the bash shell with: source /path/to/venv/bin/activate. (you usually need sudo)

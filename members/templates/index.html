@@ -1,8 +1,8 @@
 <script>
     function entervalue() {
         const x = document.getElementById("numberinput").value
-        document.getElementById("test_a").href = "test/" + x
-        document.getElementById("form_a").action = "test/" + x
+        document.getElementById("test_a").href = "add_request/" + x
+        document.getElementById("form_a").action = "add_request/" + x
         document.getElementById("paragraph").innerHTML = "selected number:" + x
     }
 </script>
@@ -32,4 +32,4 @@ Time:<br>
 <input type="submit" value="Submit" class="btn btn-primary">
 </div>
 </form></div>
-<a href="test/" id="test_a">test here</a>
+<a href="add_request/" id="test_a">test here</a>

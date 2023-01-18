@@ -7,7 +7,9 @@ urlpatterns = [
     path('', views.index, name='index'),
 
     #CHANGE THIS LATER
-    path('test/<int:id>', views.test, name='test'),
+    path('add_request/<int:id>', views.add_request, name='add_request'),
+    path('edit/<int:id>', views.edit, name='edit'),
+    path('edit_request/<int:id>', views.edit_request, name='edit_request'),
     path('dashboard/', views.dashboard, name='dashboard'),
 
     #EDIT

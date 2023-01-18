@@ -89,12 +89,18 @@ def edit(request, id):
     username_obj = AccountDB.objects.get(username=username)
     user = Template.objects.get(owner=username_obj)
     templatedb = Template.objects.get(id_global=id)
+    template_date = templatedb.date
+    date = template_date.strftime("%m/%d/%Y")
+    time = template_date.strftime("%H:%M:%S")
     template = loader.get_template('update.html')
     context = {
     'templatedb': templatedb,
+    'templatedate': date,
+    'templatetime': time,
     }
     return HttpResponse(template.render(context, request))
 
+@login_required
 def edit_request(request, id):
     id_str = str(id)
     male_name = request.POST['male_name']
@@ -126,7 +132,7 @@ def edit_request(request, id):
     return HttpResponse(template.render(context, request))
 
 @login_required
-def test(request, id):
+def add_request(request, id):
     username = request.user.username
     username_obj = AccountDB.objects.get(username=username)
     # try:
