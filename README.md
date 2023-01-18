@@ -15,5 +15,5 @@ On going project created by Yuan Mizuna!#5858
 
 <h2>📓Notes:</h2>
 
-Activate venv if you are going to do anything with django / python related in terminal (including running the server)
+Activate venv if you are going to do anything with django / python related in terminal (including running the server)<br>
 Open for Issues, will get this repo on private later.
