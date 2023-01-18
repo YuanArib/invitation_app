@@ -14,5 +14,6 @@ On going project created by Yuan Mizuna!#5858
 - Go to 127.0.0.1:8000
 
 <h2>📓Notes:</h2>
+
 Activate venv if you are going to do anything with django / python related in terminal (including running the server)
 Open for Issues, will get this repo on private later.
