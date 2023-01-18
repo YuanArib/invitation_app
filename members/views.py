@@ -10,6 +10,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib import messages
+from .forms import NewUserForm
 
 # Create your views here.
 
@@ -23,38 +24,58 @@ def validate_username(username):
     else:
         return True
 
+def get_username(username):
+    try:
+        User.objects.get(username=username)
+        return True
+    except User.DoesNotExist:
+        return False
+
 def register(request):
     if not request.user.is_authenticated:
-        template = loader.get_template('register.html')
-        return HttpResponse(template.render(request))   
+        # template = loader.get_template('register.html')
+        # return HttpResponse(template.render({}, request)) 
+        form = NewUserForm()
+        return render(request, 'register.html', {'register_form': form})  
     else:
         messages.error(request, 'you are logged in already')
-        return render(request, 'index.html')
+        return redirect(dashboard)
 
 def register_request(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = NewUserForm(request.POST)
+        print("Received POST Request... At: " + str(datetime.now()))
         if form.is_valid():
             form.save()
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
-            if validate_username(username) == False:
+            print("Form validated with username and password. At:" + str(datetime.now()))
+            if get_username(username) == False:
                 messages.error(request, 'Username already exists. Please choose a different one.')
-                return render(request, 'register.html')
+                print("Username Already Exist. At:" + str(datetime.now()))
+                # form = NewUserForm()
+                # return render(request, 'register.html', {'register_form': form})
+                return redirect(register)
             else:
                 # save user info in database
                 user = authenticate(username=username, password=raw_password)
+                AccountDB.objects.create(username=username)
                 login(request, user)
-                return redirect('home')
+                print("Registration completed with username and password. At: " + str(datetime.now()))
+                messages.success(request, 'Registration complete!')
+                return redirect(dashboard)
+        else:
+            messages.error(request, "Unsuccessful registration. Invalid information.")
+            print("Invalid Information. At: " + str(datetime.now()))
+            return render(request, 'register.html')
     else:
-        form = UserCreationForm()
-    return HttpResponseRedirect(reverse('index'))
+        return render(request, 'index.html')
 
 @login_required
 def dashboard(request):
     username = request.user.username
-    username_obj = AccountDB.objects.get(username=username)
-    templatedb = Template.objects.filter(owner=username_obj)
+    # username_obj = AccountDB.objects.get(username=username)
+    templatedb = Template.objects.filter(user=username)
     # templatedb = Template.objects.raw('SELECT female_name, male_name FROM members_template WHERE owner = %s',[username_obj])
     context = {
         'templatedb': templatedb,
@@ -65,7 +86,8 @@ def dashboard(request):
 @login_required
 def edit(request, id):
     username = request.user.username
-    username_obj = AccountDB.objects.get(username=username)
+    # username_obj = AccountDB.objects.get(username=username)
+    user = Template.objects.get(user=username)
     templatedb = Template.objects.get(id_global=id)
     template = loader.get_template('update.html')
     context = {
@@ -106,7 +128,7 @@ def edit_request(request, id):
 @login_required
 def test(request, id):
     username = request.user.username
-    username_obj = AccountDB.objects.get(username=username)
+    # username_obj = AccountDB.objects.get(username=username)
     # try:
     #     username_obj = AccountDB.objects.get(username=username)
     # except:
@@ -134,7 +156,7 @@ def test(request, id):
         'date':str(date_html),
         'time':str(time_html),
     }
-    templatedb = Template.objects.create(owner=username_obj, male_name=male_name, female_name=female_name, date=date_datetime)
+    templatedb = Template.objects.create(user=username, male_name=male_name, female_name=female_name, date=date_datetime)
     # public_templatedb = publicTemplate(id_n)
 
     content = render_to_string('template1.html', context) 

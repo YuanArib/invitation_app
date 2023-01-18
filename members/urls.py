@@ -16,5 +16,5 @@ urlpatterns = [
 
     #I KNOW THIS ISNT EVEN RELATED TO MEMBERS BUT IDK HOW SHOULD I DO IT
     path('register/', views.register, name='register'),
-    path('register_request/', views.register_request, name='register_request')
+    path('register/register_request/', views.register_request, name='register_request')
 ]
