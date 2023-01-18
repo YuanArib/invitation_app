@@ -8,8 +8,8 @@ class AccountDB(models.Model):
 #     # email = models.EmailField()
 
 class Template(models.Model):
-    # owner = models.ForeignKey(AccountDB, on_delete=models.CASCADE)
-    user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
+    owner = models.ForeignKey(AccountDB, on_delete=models.CASCADE, default=None)
+    # user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
     id_template = models.IntegerField(default=0)
     id_global = models.IntegerField(default=0)
     male_name = models.CharField(max_length=4, default="default")

@@ -74,8 +74,8 @@ def register_request(request):
 @login_required
 def dashboard(request):
     username = request.user.username
-    # username_obj = AccountDB.objects.get(username=username)
-    templatedb = Template.objects.filter(user=username)
+    username_obj = AccountDB.objects.get(username=username)
+    templatedb = Template.objects.filter(owner=username_obj)
     # templatedb = Template.objects.raw('SELECT female_name, male_name FROM members_template WHERE owner = %s',[username_obj])
     context = {
         'templatedb': templatedb,
@@ -86,8 +86,8 @@ def dashboard(request):
 @login_required
 def edit(request, id):
     username = request.user.username
-    # username_obj = AccountDB.objects.get(username=username)
-    user = Template.objects.get(user=username)
+    username_obj = AccountDB.objects.get(username=username)
+    user = Template.objects.get(owner=username_obj)
     templatedb = Template.objects.get(id_global=id)
     template = loader.get_template('update.html')
     context = {
@@ -128,7 +128,7 @@ def edit_request(request, id):
 @login_required
 def test(request, id):
     username = request.user.username
-    # username_obj = AccountDB.objects.get(username=username)
+    username_obj = AccountDB.objects.get(username=username)
     # try:
     #     username_obj = AccountDB.objects.get(username=username)
     # except:
@@ -156,7 +156,7 @@ def test(request, id):
         'date':str(date_html),
         'time':str(time_html),
     }
-    templatedb = Template.objects.create(user=username, male_name=male_name, female_name=female_name, date=date_datetime)
+    templatedb = Template.objects.create(owner=username_obj, male_name=male_name, female_name=female_name, date=date_datetime)
     # public_templatedb = publicTemplate(id_n)
 
     content = render_to_string('template1.html', context) 
