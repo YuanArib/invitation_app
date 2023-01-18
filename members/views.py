@@ -91,8 +91,8 @@ def edit(request, id):
     templatedb = Template.objects.get(id_global=id)
     template_date = templatedb.date
     date = template_date.strftime("%m/%d/%Y")
-    time = template_date.strftime("%H:%M:%S")
-    template = loader.get_template('update.html')
+    time = template_date.strftime("%H:%M")
+    template = loader.get_template('edit.html')
     context = {
     'templatedb': templatedb,
     'templatedate': date,
@@ -135,17 +135,6 @@ def edit_request(request, id):
 def add_request(request, id):
     username = request.user.username
     username_obj = AccountDB.objects.get(username=username)
-    # try:
-    #     username_obj = AccountDB.objects.get(username=username)
-    # except:
-    #     print("Variable username is not defined")
-    #     username_obj = AccountDB.objects.create(username=username)
-    #     print("Created new username")
-    # else:
-    #     username_obj = AccountDB.objects.get(username=username)
-    #     print("username found")
-    #     print(username)
-    # username_obj = AccountDB.objects.create(username=username)
     date_html = request.POST['date']
     time_html = request.POST['time']
     html_datetime = f'{date_html} {time_html}'
@@ -171,3 +160,15 @@ def add_request(request, id):
         static_file.write(content)
 
     return HttpResponse(template.render(context, request))
+
+    # try:
+    #     username_obj = AccountDB.objects.get(username=username)
+    # except:
+    #     print("Variable username is not defined")
+    #     username_obj = AccountDB.objects.create(username=username)
+    #     print("Created new username")
+    # else:
+    #     username_obj = AccountDB.objects.get(username=username)
+    #     print("username found")
+    #     print(username)
+    # username_obj = AccountDB.objects.create(username=username)
