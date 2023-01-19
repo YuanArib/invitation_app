@@ -18,5 +18,9 @@ urlpatterns = [
 
     #I KNOW THIS ISNT EVEN RELATED TO MEMBERS BUT IDK HOW SHOULD I DO IT
     path('register/', views.register, name='register'),
-    path('register/register_request/', views.register_request, name='register_request')
+    path('register/register_request/', views.register_request, name='register_request'),
+    path("password_change/", views.password_change, name="password_change"),
+    path("password_change_request/", views.password_change_request, name="password_change_request"),
+    path("password_reset", views.password_reset_request, name="password_reset"),
+    path('reset/<uidb64>/<token>', views.passwordResetConfirm, name='password_reset_confirm')
 ]

@@ -6,6 +6,17 @@
         document.getElementById("paragraph").innerHTML = "selected number:" + x
     }
 </script>
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+        {{ message }}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
 <div style="margin-left: 25%;margin-right: 25%;margin-top: 10%;border: solid;border-width: 1px;border-radius: 8px;padding: 3%;">
     <h1 style="text-align: center;">Add logs</h1>
 <form action="test/" method="post" id="form_a">

@@ -20,12 +20,24 @@
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
 <script src="https://kit.fontawesome.com/5ad3573202.js" crossorigin="anonymous"></script>
 <div style="padding:2%;margin: 8% 30% 0% 30%;border: solid;border-width: 0px;border-radius: 15px;height:60%;background-color: #fff;text-align: center;">
-  <a href="/" style="color: black;float: right;"><i class="fa-solid fa-x"></i></a>
+  {% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+        {{ message }}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+  <a href="/" style="color: black;float: right;"><i class="fa-solid fa-x"></i>Close</a>
   <img src="{% static 'img/logo.png' %}" width="109.5" height="30.525">
 <h5 style="padding:50px 0px 10px 0px;margin: 0px 0px 70px 0px;text-align:center;font-family: 'Inter', sans-serif;">Welcome Back! <span style="color:#ffac04;">Happi</span> to see you around!</h5>
 <form method="post">
   {% csrf_token %}
   {{form.as_p}}
   <button type="submit" class="btn btn-primary">Log In</button>
+  <p class="text-center">Does not have an account? Please <a href="/members">Register</a> a new account instead</p>
+  <p><a href="">Forgot your Password?</a></p>
 </form></div>
 {% endblock %}

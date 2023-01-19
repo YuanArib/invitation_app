@@ -1,3 +1,13 @@
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+        {{ message }}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
 <div>
     {% for x in templatedb %}
     <div style="color:gray"><h2>{{x.id_global}} {{x.male_name}} & {{x.female_name}} {{x.id_global}} & {{x.date}}</h2><a href="/members/edit/{{x.id_global}}">edit</a></div>
