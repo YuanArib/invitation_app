@@ -10,7 +10,7 @@ from django.contrib.auth.forms import PasswordResetForm
 # Create your forms here.
 
 class NewUserForm(UserCreationForm):
-	email = forms.EmailField(required=True)
+	email = forms.EmailField(help_text='Must be a valid Email', required=True)
 
 	class Meta:
 		model = User

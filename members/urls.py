@@ -1,6 +1,5 @@
 from django.urls import path
 from django.urls import include, path
-
 from . import views
 
 urlpatterns = [
@@ -11,6 +10,7 @@ urlpatterns = [
     path('edit/<int:id>', views.edit, name='edit'),
     path('edit_request/<int:id>', views.edit_request, name='edit_request'),
     path('dashboard/', views.dashboard, name='dashboard'),
+    path('open/<int:id>', views.open_file, name='open_file'),
 
     #EDIT
     path('edit/<int:id>', views.edit, name='edit'),

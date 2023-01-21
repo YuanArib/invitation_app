@@ -86,7 +86,7 @@ def passwordResetConfirm(request, uidb64, token):
             if form.is_valid():
                 form.save()
                 messages.success(request, "Your password has been set. You may go ahead and <b>log in </b> now.")
-                return redirect('homepage')
+                return redirect('dashboard')
             else:
                 for error in list(form.errors.values()):
                     messages.error(request, error)
@@ -97,7 +97,7 @@ def passwordResetConfirm(request, uidb64, token):
         messages.error(request, "Link is expired")
 
     messages.error(request, 'Something went wrong, redirecting back to Homepage')
-    return redirect("homepage")
+    return redirect("dashboard")
 
 @login_required
 def password_change(request):
@@ -134,6 +134,13 @@ def get_username(username):
     except User.DoesNotExist:
         return False
 
+def get_email(email):
+    try:
+        User.objects.get(email=email)
+        return False
+    except User.DoesNotExist:
+        return True
+
 def register(request):
     if not request.user.is_authenticated:
         # template = loader.get_template('register.html')
@@ -145,22 +152,29 @@ def register(request):
         return redirect(dashboard)
 
 def register_request(request):
+    if request.user.is_authenticated:
+        return redirect("/")
     if request.method == 'POST':
         form = NewUserForm(request.POST)
         print("Received POST Request... At: " + str(datetime.now()))
         if form.is_valid():
-            form.save()
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
+            email = form.cleaned_data.get('email')
             print("Form validated with username and password. At:" + str(datetime.now()))
-            if get_username(username) == False:
+            if get_email(email) == False:
+                messages.error(request, 'Email already exists. Please choose a different one.')
+                print("This Email Already Exist. At:" + str(datetime.now()))
+                return redirect(dashboard)
+            elif get_username(username) == True:
                 messages.error(request, 'Username already exists. Please choose a different one.')
                 print("Username Already Exist. At:" + str(datetime.now()))
                 # form = NewUserForm()
                 # return render(request, 'register.html', {'register_form': form})
-                return redirect(register)
+                return redirect(dashboard)
             else:
                 # save user info in database
+                form.save()
                 user = authenticate(username=username, password=raw_password)
                 AccountDB.objects.create(username=username)
                 login(request, user)
@@ -172,7 +186,15 @@ def register_request(request):
             print("Invalid Information. At: " + str(datetime.now()))
             return render(request, 'register.html')
     else:
-        return render(request, 'index.html')
+        form = NewUserForm()
+
+    return render(
+        request = request,
+        template_name = "register.html",
+        context={"form":form}
+        )
+    # else:
+    #     return render(request, 'index.html')
 
 @login_required
 def dashboard(request):
@@ -233,7 +255,7 @@ def edit_request(request, id):
     content = render_to_string('template1.html', context)
     template = loader.get_template('template1.html')
     # return HttpResponseRedirect(reverse('edit'))
-    with open('C:\\Users\\Alaikal Hamdi\\Documents\\Alaikal Hamdi\\Yuan X Taiga\\invitation_app\\templates\\invite_templates\\ts_test' + id_str + '.html', 'w') as static_file:
+    with open('C:\\Users\\Alaikal Hamdi\\Documents\\Alaikal Hamdi\\Yuan X Taiga\\invitation_app\\members\\templates\\invite_templates\\ts_test' + id_str + '.html', 'w') as static_file:
         static_file.write(content)
 
     return HttpResponse(template.render(context, request))
@@ -258,24 +280,53 @@ def add_request(request, id):
         'date':str(date_html),
         'time':str(time_html),
     }
-    templatedb = Template.objects.create(owner=username_obj, male_name=male_name, female_name=female_name, date=date_datetime)
+    templatedb = Template.objects.create(owner=username_obj, male_name=male_name, female_name=female_name, date=date_datetime, id_global=id_n)
     # public_templatedb = publicTemplate(id_n)
 
     content = render_to_string('template1.html', context) 
     template = loader.get_template('template1.html')               
-    with open('C:\\Users\\Alaikal Hamdi\\Documents\\Alaikal Hamdi\\Yuan X Taiga\\invitation_app\\templates\\invite_templates\\ts_test' + id_str + '.html', 'w') as static_file:
+    with open('C:\\Users\\Alaikal Hamdi\\Documents\\Alaikal Hamdi\\Yuan X Taiga\\invitation_app\\members\\templates\\invite_templates\\ts_test' + id_str + '.html', 'w') as static_file:
         static_file.write(content)
 
     return HttpResponse(template.render(context, request))
 
-    # try:
-    #     username_obj = AccountDB.objects.get(username=username)
-    # except:
-    #     print("Variable username is not defined")
-    #     username_obj = AccountDB.objects.create(username=username)
-    #     print("Created new username")
-    # else:
-    #     username_obj = AccountDB.objects.get(username=username)
-    #     print("username found")
-    #     print(username)
-    # username_obj = AccountDB.objects.create(username=username)
+def check_ownership(username, id):
+    templateid = Template.objects.get(id_global=id)
+    if templateid.owner == username:
+        return True
+    else:
+        return False
+
+def get_template(id):
+    try:
+        Template.objects.get(id_global=id)
+        return True
+    except Template.DoesNotExist:
+        return False
+
+@login_required
+def open_file(request, id):
+    username = request.user.username
+    username_obj = AccountDB.objects.get(username=username)
+    if get_template(id=id) == True:
+        if check_ownership(username=username_obj, id=id) == True:
+            template = loader.get_template('invite_templates/ts_test' + str(id) + '.html')
+            return HttpResponse(template.render({}, request))
+        else:
+            messages.error(request, "You are not the owner of this template.")
+            return redirect(dashboard)
+    else:
+        messages.error(request, "404: Template is not found")
+        return redirect(dashboard)
+
+# try:
+#     username_obj = AccountDB.objects.get(username=username)
+# except:
+#     print("Variable username is not defined")
+#     username_obj = AccountDB.objects.create(username=username)
+#     print("Created new username")
+# else:
+#     username_obj = AccountDB.objects.get(username=username)
+#     print("username found")
+#     print(username)
+# username_obj = AccountDB.objects.create(username=username)
