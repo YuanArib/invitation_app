@@ -3,3 +3,10 @@
 <div style="text-align: center;">
 <h2>{{male_name}} & {{female_name}} </h2>
 <p>{{date}} & {{time}} </p></div>
+
+{% for x in template_event %}
+<div>
+    <h3> {{x.name }} started at {{x.date_start}} {{x.time_end}} until {{x.date_end}} {{x.time_end}}</h3>
+    <p>{{x.description}} </p>
+</div>
+{%endfor%}

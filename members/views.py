@@ -4,7 +4,6 @@ from django.template import loader
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
-from members.models import AccountDB, Template
 from datetime import datetime
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
@@ -16,6 +15,8 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage
+
+from members.models import AccountDB, Template, Template_Event
 
 from .forms import NewUserForm
 from .forms import SetPasswordForm
@@ -260,35 +261,51 @@ def edit_request(request, id):
 
     return HttpResponse(template.render(context, request))
 
-@login_required
-def add_request(request, id):
-    username = request.user.username
-    username_obj = AccountDB.objects.get(username=username)
-    date_html = request.POST['date']
-    time_html = request.POST['time']
-    html_datetime = f'{date_html} {time_html}'
-    date_datetime = datetime.strptime(html_datetime, '%Y-%m-%d %H:%M')
+def get_id():
+    def Empty():
+        print("There is nothing in the record, returning 1.")
+        return 1
+    def Success(id_n):
+        print("Successfully parsed new get_id() with the id: " + str(id_n))
+        return id_n
 
-    # publicTemplate_obj = publicTemplate.objects.all().values()
-    male_name = request.POST['male_name']
-    female_name = request.POST['female_name']
-    id_n = id + 1
-    id_str = str(id_n)
-    context = {
-        'male_name':male_name,
-        'female_name':female_name,
-        'date':str(date_html),
-        'time':str(time_html),
-    }
-    templatedb = Template.objects.create(owner=username_obj, male_name=male_name, female_name=female_name, date=date_datetime, id_global=id_n)
-    # public_templatedb = publicTemplate(id_n)
+    # id = Template.objects.last('id_global')
+    
+    # id = Template.objects.raw('SELECT members_template, .. FROM table_name Order By date_column Desc')
+    id_template = Template.objects.all().order_by('-id_global').first()
+    id_n = id_template.id_global
+    if id_n == None:
+        return Empty()
+    else:
+        id_n = id_n + 1
+        return Success(id_n=id_n)
 
-    content = render_to_string('template1.html', context) 
-    template = loader.get_template('template1.html')               
-    with open('C:\\Users\\Alaikal Hamdi\\Documents\\Alaikal Hamdi\\Yuan X Taiga\\invitation_app\\members\\templates\\invite_templates\\ts_test' + id_str + '.html', 'w') as static_file:
-        static_file.write(content)
+def get_id_event(id):
+    def Empty():
+        print("There is nothing in the record, returning 1.")
+        return 1
+    def Success(id_n):
+        print("Successfully parsed new get_id() with the id: " + str(id_n))
+        return id_n
 
-    return HttpResponse(template.render(context, request))
+    # id = Template.objects.last('id_global')
+    
+    # id = Template.objects.raw('SELECT members_template, .. FROM table_name Order By date_column Desc')
+    # id_t = Template.objects.all().order_by('-id_global').first()
+    id_t = Template_Event.objects.filter(template_id=id).order_by('-event_id').first()
+    if id_t == None:
+        return Empty()
+    else:
+        id_n = id_t.event_id
+        id_n = id_n + 1
+        return Success(id_n=id_n)
+
+    # try:
+        # id_template = Template.objects.all().order_by('-id_global').first()
+        # id_n = id_template.id_global
+    #     return True
+    # except Template.DoesNotExist:
+    #     return False
 
 def check_ownership(username, id):
     templateid = Template.objects.get(id_global=id)
@@ -303,6 +320,152 @@ def get_template(id):
         return True
     except Template.DoesNotExist:
         return False
+
+class temp_event_dict:
+    def __init__(self, name, description, address, date_start, time_start, date_end, time_end):
+        self.name = name
+        self.description = description
+        self.address = address
+        self.date_start = date_start
+        self.time_start = time_start
+        self.date_end = date_end
+        self.time_end = time_end
+    # "name":name,
+    # "event_id":id_n,
+    # "description":description,
+    # "date_start":date_start,
+    # "time_start":time_start,
+    # "date_end":date_end,
+    # "time_end":time_end,
+
+def get_template_context(id):
+    template_context = Template.objects.get(id_template=id)
+    return template_context
+
+@login_required
+def add_event(request, id):
+    print(id)
+    if request.method == 'POST':
+        username = request.user.username
+        username_obj = AccountDB.objects.get(username=username)
+        id_n = get_id_event(id=id)
+        if get_template(id) == True:
+            if check_ownership(username=username_obj, id=id) == True:
+                name = request.POST['name']
+                description = request.POST['description']
+                address = request.POST['address']
+                date_start = request.POST['date_start']
+                time_start = request.POST['time_start']
+                date_end = request.POST['date_end']
+                time_end = request.POST['time_end']
+
+                html_datetime_start = f'{date_start} {time_start}'
+                date_datetime_start = datetime.strptime(html_datetime_start, '%Y-%m-%d %H:%M')
+                html_datetime_end = f'{date_end} {time_end}'
+                date_datetime_end = datetime.strptime(html_datetime_end, '%Y-%m-%d %H:%M')
+
+                # template_id = request.user.username
+                # temp_id_obj = AccountDB.objects.get(username=username)
+                # temp_id_obj = Template.objects.get(id_global=id)
+
+                temp_event = Template_Event.objects.create(
+                    template_id=id,
+                    event_id=id_n,
+                    name=name, 
+                    description=description, 
+                    address=address,
+                    date_start=date_datetime_start,
+                    date_end=date_datetime_end
+                )
+                temp_event_db = Template_Event.objects.filter(template_id=id)
+
+                # temp_event_dict = {
+                #     "name":name,
+                #     "event_id":id_n,
+                #     "description":description,
+                #     "date_start":date_start,
+                #     "time_start":time_start,
+                #     "date_end":date_end,
+                #     "time_end":time_end,
+                # }
+                # templatedb = get_template_context(id)
+                template_context = Template.objects.get(id_global=id)
+
+                context = {
+                    'male_name':template_context.male_name,
+                    'female_name':template_context.female_name,
+                    'date':template_context.date,
+                    'template_event':temp_event_db
+                }
+                content = render_to_string('template1.html', context) 
+                template = loader.get_template('template1.html')               
+                with open('C:\\Users\\Alaikal Hamdi\\Documents\\Alaikal Hamdi\\Yuan X Taiga\\invitation_app\\members\\templates\\invite_templates\\ts_test' + str(id) + '.html', 'w') as static_file:
+                    static_file.write(content)
+
+                return HttpResponse(template.render(context, request))
+            else:
+                messages.error(request, "You are not the owner of this template.")
+                return redirect(dashboard)
+        else:
+            messages.error(request, "Template does not exist")
+            return redirect(dashboard)
+    else:
+        context = {'template_id':id}
+        template = loader.get_template('add_event.html')
+        return HttpResponse(template.render(context, request))
+
+@login_required
+def add_request(request):
+    username = request.user.username
+    username_obj = AccountDB.objects.get(username=username)
+    date_start_html = request.POST['date']
+    time_start_html = request.POST['time']
+    # date_end_html = request.POST['date_end']
+    # time_end_html = request.POST['time_end']
+    
+    html_datetime = f'{date_start_html} {time_start_html}'
+    date_datetime = datetime.strptime(html_datetime, '%Y-%m-%d %H:%M')
+
+    # publicTemplate_obj = publicTemplate.objects.all().values()
+    male_name = request.POST['male_name']
+    female_name = request.POST['female_name']
+    id_def = get_id()
+    # id_n = id + 1
+    id_str = str(id_def)
+    # example_event_dict = {
+                #     "name":"Event Name Example",
+                #     "event_id":1,
+                #     "description":'This is an event name description example. To create a new event, go to "+ Add Event" button in dashboard',
+                #     "date_start":"1-1-2000",
+                #     "time_start":"07:00 PM",
+                #     "date_end":"1-2-2000",
+                #     "time_end":"07:00 AM",
+                # }
+    context = {
+        'male_name':male_name,
+        'female_name':female_name,
+        'date':str(date_start_html),
+        'time':str(time_start_html),
+        # 'template_event': example_event_dict
+    }
+
+    templatedb = Template.objects.create(
+        owner=username_obj,
+        male_name=male_name,
+        date=date_datetime, 
+        female_name=female_name, 
+        id_global=id_def
+    )
+
+    # date=date_datetime,
+    # public_templatedb = publicTemplate(id_n)
+
+    content = render_to_string('template1.html', context) 
+    template = loader.get_template('template1.html')               
+    with open('C:\\Users\\Alaikal Hamdi\\Documents\\Alaikal Hamdi\\Yuan X Taiga\\invitation_app\\members\\templates\\invite_templates\\ts_test' + id_str + '.html', 'w') as static_file:
+        static_file.write(content)
+
+    return HttpResponse(template.render(context, request))
 
 @login_required
 def open_file(request, id):

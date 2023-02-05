@@ -1,0 +1,58 @@
+<!-- <script>
+    function entervalue() {
+        const x = document.getElementById("numberinput").value
+        document.getElementById("test_a").href = "add_request/" + x
+        document.getElementById("form_a").action = "add_request/" + x
+        document.getElementById("paragraph").innerHTML = "selected number:" + x
+    }
+</script> -->
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+        {{ message }}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+<div style="margin-left: 25%;margin-right: 25%;margin-top: 10%;border: solid;border-width: 1px;border-radius: 8px;padding: 3%;">
+    <h1 style="text-align: center;">Add logs</h1>
+<form action="/members/add_event/{{template_id}}" method="post" id="form_a">
+{% csrf_token %}
+<div class="align-items-center">
+<div class="col">
+Name:<br>
+<input name="name" value="{{ mymember.mood }}" class="form-control mb-2">
+<br></div>
+<div class="col">
+    Description:<br>
+    <input name="description" value="{{ mymember.mood }}" class="form-control mb-2">
+    <br></div>
+<div class="row">
+<div class="col">
+Address:<br>
+<input name="address" value="{{ mymember.mood }}" class="form-control mb-2">
+<br></div>
+<div class="col">Start Date:<br>
+<input name="date_start" value="{{ mymember.mood }}" class="form-control mb-2" type="date">
+<br></div></div>
+<div class="col">
+Start Time:<br>
+<input name="time_start" value="{{ mymember.reason }}" class="form-control mb-2" type="time">
+<br></div>
+<div class="col">End Date:<br>
+<input name="date_end" value="{{ mymember.mood }}" class="form-control mb-2" type="date">
+<br></div>
+<div class="col">
+End Time:<br>
+<input name="time_end" value="{{ mymember.reason }}" class="form-control mb-2" type="time">
+<br></div>
+<!-- <p id="paragraph">selected number: 0</p>
+<input id="numberinput" type="number" value="enter number"><button onclick="entervalue()">enter number</button> -->
+<input type="submit" value="Submit" class="btn btn-primary">
+<!-- </div>
+</form></div>
+<a href="add_request/" id="test_a">test here</a> -->
+

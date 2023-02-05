@@ -6,11 +6,12 @@ urlpatterns = [
     path('', views.index, name='index'),
 
     #CHANGE THIS LATER
-    path('add_request/<int:id>', views.add_request, name='add_request'),
+    path('add_request/', views.add_request, name='add_request'),
     path('edit/<int:id>', views.edit, name='edit'),
     path('edit_request/<int:id>', views.edit_request, name='edit_request'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('open/<int:id>', views.open_file, name='open_file'),
+    path('add_event/<int:id>', views.add_event, name='add_event'),
 
     #EDIT
     path('edit/<int:id>', views.edit, name='edit'),
