@@ -15,13 +15,13 @@ class Template(models.Model):
     # user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
     id_template = models.IntegerField(default=0)
     id_global = models.IntegerField(default=0)
-    male_name = models.CharField(max_length=4, default="default")
+    male_name = models.CharField(max_length=40, default="default")
     female_name = models.CharField(max_length=40, default="default")
     # date_end = models.DateField(default=datetime.now())
     date = models.DateField(default=datetime.now())
 
-    def __str__(self):
-        return "%s, %s & %s" % (self.id_global, self.male_name, self.female_name)
+    # def __str__(self):
+    #     return "%s, %s & %s" % (self.id_global, self.male_name, self.female_name)
     # time = models.TimeField()
 
 class Template_Event(models.Model):

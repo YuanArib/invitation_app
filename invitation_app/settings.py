@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
+    'rest_framework',
     'crispy_forms',
 ]
 
@@ -49,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'invitation_app.urls'
@@ -128,3 +131,8 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'yuanmizunashi@gmail.com'
 EMAIL_HOST_PASSWORD = 'smtp_password'
 PASSWORD_RESET_TIMEOUT = 14400
+
+CORS_ORIGIN_WHITELIST = [
+     'http://localhost:3000'
+]
+

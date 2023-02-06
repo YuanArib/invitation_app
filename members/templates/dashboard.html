@@ -1,3 +1,4 @@
+{% include 'navbar.html' %}
 {% if messages %}
 <ul class="messages">
     {% for message in messages %}
@@ -10,6 +11,6 @@
 {% endif %}
 <div>
     {% for x in templatedb %}
-    <div style="color:gray"><h2>{{x.id_global}} {{x.male_name}} & {{x.female_name}} {{x.id_global}} & {{x.date}}</h2><a href="/members/edit/{{x.id_global}}">edit</a></div>
+    <div style="color:gay"><h2>{{x.id_global}} {{x.male_name}} & {{x.female_name}} {{x.id_global}} & {{x.date}}</h2><a href="/members/edit/{{x.id_global}}">edit</a></div>
     {%endfor%}
 </div>

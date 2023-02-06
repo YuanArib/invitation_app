@@ -16,18 +16,24 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage
 
+from rest_framework import viewsets
+
 from members.models import AccountDB, Template, Template_Event
 
 from .forms import NewUserForm
 from .forms import SetPasswordForm
 from .forms import PasswordResetForm
 from .token import account_activation_token
-
+from .serializers import create_template
 # Create your views here.
 
 def index(request):
     template = loader.get_template('index.html')
     return HttpResponse(template.render({}, request))
+
+class templateapi(viewsets.ModelViewSet):
+    serializer_class = create_template
+    queryset = Template.objects.all()
 
 def password_reset_request(request):
     if request.method == 'POST':
