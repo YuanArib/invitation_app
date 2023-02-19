@@ -136,7 +136,8 @@ EMAIL_HOST_USER = 'yuanmizunashi@gmail.com'
 EMAIL_HOST_PASSWORD = 'smtp_password'
 PASSWORD_RESET_TIMEOUT = 14400
 
-CORS_ORIGIN_WHITELIST = [
-     'http://localhost:3000'
-]
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_WHITELIST = [
+#      'http://localhost:5173/'
+# ]
 

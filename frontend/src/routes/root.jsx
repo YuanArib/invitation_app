@@ -1,5 +1,7 @@
 import { Outlet, Link, useLoaderData, Form, redirect, NavLink, useNavigation, } from "react-router-dom";
 import { getContacts, createContact } from "../contacts";
+import axios from "axios";
+import React from "react";
 
 export async function action() {
   const contact = await createContact();
@@ -11,75 +13,34 @@ export async function loader() {
   return { contacts };
 }
 
+export async function api() {
+  const [post, setPost] = React.useState(null);
+  // axios.get('http://127.0.0.1:8000/api/template/')
+  //        .then(response => {
+  //           var templates = response.data;
+  //           console.log(templates)
+  //           return templates
+  //        })
+  //        .catch(error => console.error(error));}
+  // React.useEffect(() => {
+  //   axios.get('http://127.0.0.1:8000/api/template/').then((response) => {
+  //     setPost(response.data);
+  //   });
+  // }, []);
+}
+
 export default function Root() {
-    const { contacts } = useLoaderData();
-    const navigation = useNavigation();
+  const [contacts, setPost] = React.useState(null);
+  // const { contacts } = api();
+  React.useEffect(() => {
+      axios.get('http://127.0.0.1:8000/api/template/').then((response) => {
+        setPost(response.data);
+      });
+    }, [])
+  if (!contacts) return null;
+  const templatelist = contacts.map(contacts => <li key={contacts.id_global} >{contacts.male_name} & {contacts.female_name} at {contacts.date}</li>);
+  const navigation = useNavigation();
     return (
-      <>
-        <div id="sidebar">
-          <h1>React Router Contacts</h1>
-          <div>
-            <form id="search-form" role="search">
-              <input
-                id="q"
-                aria-label="Search contacts"
-                placeholder="Search"
-                type="search"
-                name="q"
-              />
-              <div
-                id="search-spinner"
-                aria-hidden
-                hidden={true}
-              />
-              <div
-                className="sr-only"
-                aria-live="polite"
-              ></div>
-            </form>
-            <Form method="post">
-            <button type="submit">New</button>
-          </Form>
-          </div>
-          <nav>
-          {contacts.length ? (
-            <ul>
-              {contacts.map((contact) => (
-                <li key={contact.id}>
-                  <NavLink
-                    to={`contacts/${contact.id}`}
-                    className={({ isActive, isPending }) =>
-                      isActive
-                        ? "active"
-                        : isPending
-                        ? "pending"
-                        : ""
-                    }
-                  >
-                  <Link to={`contacts/${contact.id}`}>
-                    {contact.first || contact.last ? (
-                      <>
-                        {contact.first} {contact.last}
-                      </>
-                    ) : (
-                      <i>No Name</i>
-                    )}{" "}
-                    {contact.favorite && <span>★</span>}
-                  </Link>
-                  </NavLink>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>
-              <i>No contacts</i>
-            </p>
-          )}
-          </nav>
-        </div>
-        <div id="detail" className={navigation.state === "loading" ? "loading" : ""}>
-          <Outlet />
-        </div>
-      </>
+      <ul>{templatelist}</ul>
     );
   }

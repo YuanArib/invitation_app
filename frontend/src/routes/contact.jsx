@@ -1,12 +1,22 @@
 import { Form, useLoaderData } from "react-router-dom";
 import { getContact } from "../contacts";
+// import { templateList } from "../api";
+import axios from "axios";
 
 export async function loader({ params }) {
   return getContact(params.contactId);
 }
 
 export default function Contact() {
-  const contact = useLoaderData();
+  function api() {axios.get('http://127.0.0.1:8000/api/template/')
+         .then(response => {
+            var templates = response.data;
+            console.log(templates)
+            return templates
+         })
+         .catch(error => console.error(error));}
+  const templates = api()
+
   // const contact = {
   //   first: "Your",
   //   last: "Name",
@@ -20,14 +30,14 @@ export default function Contact() {
     <div id="contact">
       <div>
         <img
-          key={contact.avatar}
-          src={contact.avatar || null}
+          key={templates.img}
+          src={templates.img || null}
         />
       </div>
 
       <div>
         <h1>
-          {contact.first || contact.last ? (
+          {templates.male_name || contact.female_name ? (
             <>
               {contact.first} {contact.last}
             </>
