@@ -16,5 +16,7 @@ module.exports = {
       'bermuda': '#78dcca',
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/aspect-ratio'),
+  ],
 }
